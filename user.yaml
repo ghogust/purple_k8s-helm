@@ -1,0 +1,29 @@
+User:
+  Admin: yes
+  Name: Иван
+  Age: 30
+  Title: должен
+  Skills:
+    - Name: "Есть пирожки"
+        Mastery: 5
+        Description: |
+          Ест пирожки
+          Как боженька
+    - Name: "Кодить"
+        Mastery: 3
+        Description: |
+          Что-то умеет
+          Что-то нет
+  Residence:
+    Country: Россия
+    City: Туапсе
+    Street: Ленина
+    House_number: 1
+    Flat_number: 1
+  Pets:
+    - Name: Барсик
+        Breed: Дворовый
+        Can_meow: yes
+    - Name: Бобик
+        Breed: Бульдог
+        Can_meow: no
