@@ -5,13 +5,13 @@ User:
   Title: должен
   Skills:
     - Name: "Есть пирожки"
-        Mastery: 5
-        Description: |
+      Mastery: 5
+      Description: |
           Ест пирожки
           Как боженька
     - Name: "Кодить"
-        Mastery: 3
-        Description: |
+      Mastery: 3
+      Description: |
           Что-то умеет
           Что-то нет
   Residence:
@@ -21,9 +21,9 @@ User:
     House_number: 1
     Flat_number: 1
   Pets:
-    - Name: Барсик
-        Breed: Дворовый
-        Can_meow: yes
-    - Name: Бобик
-        Breed: Бульдог
-        Can_meow: no
+    - Name: 'Барсик'
+      Breed: 'Дворовый'
+      Can_meow: yes
+    - Name: 'Бобик'
+      Breed: 'Бульдог'
+      Can_meow: no
