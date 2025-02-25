@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conv-rmq-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      components: backend
+  template:
+    metadata:
+      labels:
+        components: backend
+    spec:
+      containers:
+        - name: conv-rmq
+          image: rabbitmq:3.13.7-management-alpine
+          ports: 
+            - containerPort: 15672
+          env:
+            - name: SEED_USERNAME
+              value: demo
+            - name: SEED_USER_PASSWORD
+              value: demo
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "400m"
+          volumeMounts:
+            - name: conv-rmq-volume
+              mountPath: /var/lib/rabbitmq
+      volumes:
+        - name: conv-rmq-volume
+          persistentVolumeClaim:
+            claimName: conv-rmq-pvc
