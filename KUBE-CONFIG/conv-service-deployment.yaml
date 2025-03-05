@@ -17,25 +17,34 @@ spec:
         - name: conv-service
           image:  antonlarichev/conv-service:1.0
           ports: 
-            - containerPort: 80
+            - containerPort: 4000
           resources:
             limits:
               memory: "512Mi"
               cpu: "100m"
           env:
+            - name: AMQP_EXCHANGE
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_EXCHANGE
+                  name: conv-rmq-secret
             - name: AMQP_USER
               valueFrom:
                 secretKeyRef:
+                  key: AMQP_USER
                   name: conv-rmq-secret
-                  key: SEED_USERNAME
             - name: AMQP_PASSWORD
               valueFrom:
                 secretKeyRef:
+                  key: AMQP_PASSWORD
                   name: conv-rmq-secret
-                  key: SEED_USER_PASSWORD
             - name: AMQP_HOSTNAME
-              value: conv-rmq-clusterip
-            - name: AMQP_EXCHANGE
-              value: test
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_HOSTNAME
+                  name: conv-rmq-secret
             - name: AMQP_QUEUE
-              value: converter
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_QUEUE
+                  name: conv-rmq-secret

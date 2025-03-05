@@ -14,20 +14,20 @@ spec:
     spec:
       containers:
         - name: conv-rmq
-          image: rabbitmq:3.13.7
+          image: rabbitmq:3.8.34-management
           ports: 
-            - containerPort: 15672
+            - containerPort: 5672
           env:
-            - name: SEED_USERNAME
+            - name: RABBITMQ_DEFAULT_USER
               valueFrom:
                 secretKeyRef:
+                  key: AMQP_USER
                   name: conv-rmq-secret
-                  key: SEED_USERNAME
-            - name: SEED_USER_PASSWORD
+            - name: RABBITMQ_DEFAULT_PASS
               valueFrom:
                 secretKeyRef:
+                  key: AMQP_PASSWORD
                   name: conv-rmq-secret
-                  key: SEED_USER_PASSWORD
           resources:
             limits:
               memory: "1Gi"
