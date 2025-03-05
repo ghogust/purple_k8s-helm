@@ -1,41 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: conv-rmq-deployment
+  name: conv-api-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      components: backend
+      components: api
   template:
     metadata:
+      name: conv-api
       labels:
-        components: backend
+        components: api
     spec:
       containers:
-        - name: conv-rmq
-          image: rabbitmq:3.13.7
+        - name: conv-api
+          image:  antonlarichev/conv-api:1.0
           ports: 
-            - containerPort: 15672
+            - containerPort: 3000
           env:
-            - name: SEED_USERNAME
+            - name: AMQP_USER
               valueFrom:
                 secretKeyRef:
                   name: conv-rmq-secret
                   key: SEED_USERNAME
-            - name: SEED_USER_PASSWORD
+            - name: AMQP_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: conv-rmq-secret
                   key: SEED_USER_PASSWORD
+            - name: AMQP_HOSTNAME
+              value: conv-rmq-clusterip
+            - name: AMQP_EXCHANGE
+              value: test
           resources:
             limits:
-              memory: "1Gi"
+              memory: "512Mi"
               cpu: "200m"
           volumeMounts:
-            - name: conv-rmq-volume
-              mountPath: /var/lib/rabbitmq
+            - name: conv-api-pv
+              mountPath: /opt/app/uploads
       volumes:
-        - name: conv-rmq-volume
+        - name: conv-api-pv
           persistentVolumeClaim:
-            claimName: conv-rmq-pvc
+            claimName: conv-api-pvc
