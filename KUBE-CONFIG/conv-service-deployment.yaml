@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conv-service-deployment
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      components: service
+  template:
+    metadata:
+      name: conv-service
+      labels:
+        components: service
+    spec:
+      containers:
+        - name: conv-service
+          image:  antonlarichev/conv-service:1.0
+          ports: 
+            - containerPort: 4000
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "100m"
+          env:
+            - name: AMQP_EXCHANGE
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_EXCHANGE
+                  name: conv-rmq-secret
+            - name: AMQP_USER
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_USER
+                  name: conv-rmq-secret
+            - name: AMQP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_PASSWORD
+                  name: conv-rmq-secret
+            - name: AMQP_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_HOSTNAME
+                  name: conv-rmq-secret
+            - name: AMQP_QUEUE
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_QUEUE
+                  name: conv-rmq-secret
