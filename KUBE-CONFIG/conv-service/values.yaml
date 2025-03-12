@@ -1,0 +1,45 @@
+app:
+  version: 1.2
+  components: front
+  name: conv-app
+  image: antonlarichev/conv-app
+  port: 80
+  replicas: 1
+  VITE_DOMAIN: ""
+  limits:
+    memory: "512Mi"
+    cpu: "200m"
+api:
+  version: '1.0'
+  components: api
+  name: conv-api
+  image: antonlarichev/conv-api
+  port: 3000
+  replicas: 1
+  mountPath: /opt/app/uploads
+  storage: 1Gi
+  limits:
+    memory: "512Mi"
+    cpu: "200m"
+rmq:
+  version: 3.8.34-management
+  components: backend
+  name: conv-rmq
+  image: rabbitmq
+  port: 5672
+  replicas: 1
+  mountPath: /var/lib/rabbitmq
+  storage: 1Gi
+  limits:
+    memory: "1Gi"
+    cpu: "200m"
+service:
+  version: '1.0'
+  components: service
+  name: conv-service
+  image: antonlarichev/conv-service
+  port: 4000
+  replicas: 4
+  limits:
+    memory: "512Mi"
+    cpu: "100m"
