@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.api.name }}-deployment
+spec:
+  replicas: {{ .Values.api.replicas }}
+  selector:
+    matchLabels:
+      components: {{ .Values.api.components }}
+  template:
+    metadata:
+      name: {{ .Values.api.name }}
+      labels:
+        components: {{ .Values.api.components }}
+    spec:
+      containers:
+        - name: {{ .Values.api.name }}
+          image:  "{{ .Values.api.image }}:{{ .Values.api.version }}"
+          ports: 
+            - containerPort: {{ .Values.api.port }}
+          env:
+            - name: AMQP_EXCHANGE
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_EXCHANGE
+                  name: {{ .Values.rmq.name }}-secret
+            - name: AMQP_USER
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_USER
+                  name: {{ .Values.rmq.name }}-secret
+            - name: AMQP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_PASSWORD
+                  name: {{ .Values.rmq.name }}-secret
+            - name: AMQP_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_HOSTNAME
+                  name: {{ .Values.rmq.name }}-secret
+          resources:
+            limits: {{ .Values.api.limits | toYaml | nindent 14 }}
+              # memory: "512Mi"
+              # cpu: "200m"
+          volumeMounts:
+            - name: {{ .Values.api.name }}-pv
+              mountPath: {{ .Values.api.mountPath }}
+      volumes:
+        - name: {{ .Values.api.name }}-pv
+          persistentVolumeClaim:
+            claimName: {{ .Values.api.name }}-pvc

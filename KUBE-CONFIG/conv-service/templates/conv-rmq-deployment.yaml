@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.rmq.name }}-deployment
+spec:
+  replicas: {{ .Values.rmq.replicas }}
+  selector:
+    matchLabels:
+      components: {{ .Values.rmq.components }}
+  template:
+    metadata:
+      labels:
+        components: {{ .Values.rmq.components }}
+    spec:
+      containers:
+        - name: {{ .Values.rmq.name }}
+          image: "{{ .Values.rmq.image }}:{{ .Values.rmq.version }}"
+          ports: 
+            - containerPort: {{ .Values.rmq.port }}
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_USER
+                  name: {{ .Values.rmq.name }}-secret
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_PASSWORD
+                  name: {{ .Values.rmq.name }}-secret
+          resources:
+            limits: {{ .Values.api.limits | toYaml | nindent 14 }}
+              # memory: "1Gi"
+              # cpu: "200m"
+          volumeMounts:
+            - name: {{ .Values.rmq.name }}-volume
+              mountPath: {{ .Values.rmq.mountPath }}
+      volumes:
+        - name: {{ .Values.rmq.name }}-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.rmq.name }}-pvc

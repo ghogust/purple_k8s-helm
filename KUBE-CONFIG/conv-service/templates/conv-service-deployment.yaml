@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.service.name }}-deployment
+spec:
+  replicas: {{ .Values.service.replicas }}
+  selector:
+    matchLabels:
+      components: {{ .Values.service.components }}
+  template:
+    metadata:
+      name: {{ .Values.service.name }}
+      labels:
+        components: {{ .Values.service.components }}
+    spec:
+      containers:
+        - name: {{ .Values.service.name }}
+          image:  "{{ .Values.service.image }}:{{ .Values.service.version }}"
+          ports: 
+            - containerPort: {{ .Values.service.port }}
+          resources:
+            limits: {{ .Values.service.limits | toYaml | nindent 14 }}
+              # memory: "512Mi"
+              # cpu: "100m"
+          env:
+            - name: AMQP_EXCHANGE
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_EXCHANGE
+                  name: {{ .Values.rmq.name }}-secret
+            - name: AMQP_USER
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_USER
+                  name: {{ .Values.rmq.name }}-secret
+            - name: AMQP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_PASSWORD
+                  name: {{ .Values.rmq.name }}-secret
+            - name: AMQP_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_HOSTNAME
+                  name: {{ .Values.rmq.name }}-secret
+            - name: AMQP_QUEUE
+              valueFrom:
+                secretKeyRef:
+                  key: AMQP_QUEUE
+                  name: {{ .Values.rmq.name }}-secret
