@@ -18,16 +18,22 @@ spec:
           ports: 
             - containerPort: {{ .Values.rmq.port }}
           env:
-            - name: RABBITMQ_DEFAULT_USER
-              valueFrom:
-                secretKeyRef:
-                  key: AMQP_USER
-                  name: {{ .Values.rmq.name }}-secret
-            - name: RABBITMQ_DEFAULT_PASS
-              valueFrom:
-                secretKeyRef:
-                  key: AMQP_PASSWORD
-                  name: {{ .Values.rmq.name }}-secret
+            {{- range .Values.envs }}
+            {{- $data := dict "name" $.Values.rmq.name "env" . }}
+            {{- if or ( eq $data.env "AMQP_USER" ) ( eq $data.env "AMQP_PASSWORD" ) }}
+            {{- include "rmq.template" $data | indent 12 }}
+            {{- end }}
+            {{- end }}
+            # - name: RABBITMQ_DEFAULT_USER
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: AMQP_USER
+            #       name: {{ .Values.rmq.name }}-secret
+            # - name: RABBITMQ_DEFAULT_PASS
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: AMQP_PASSWORD
+            #       name: {{ .Values.rmq.name }}-secret
           resources:
             limits: {{ .Values.api.limits | toYaml | nindent 14 }}
               # memory: "1Gi"
