@@ -1,7 +1,7 @@
 {{- define "service.template" }}
 - name: {{ .env }}
   valueFrom:
-    secretRef:
+    secretKeyRef:
         name: {{ .name }}-secret
         key: {{ .env }}
 {{- end }}
