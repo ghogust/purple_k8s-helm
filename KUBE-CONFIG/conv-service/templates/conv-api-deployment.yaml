@@ -23,8 +23,6 @@ spec:
             {{- $data := dict "name" $.Values.rmq.name "env" . }}
             {{- if ne $data.env "AMQP_QUEUE" }}
             {{- include "service.template" $data | indent 12 }}
-            {{- else }}
-            {{- break}}
             {{- end }}
             {{- end }}
             # - name: AMQP_EXCHANGE
