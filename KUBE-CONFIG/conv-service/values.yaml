@@ -43,12 +43,12 @@ service:
   limits:
     memory: "512Mi"
     cpu: "100m"
-queue:
-  exchange: test
-  user: demo
-  password: demo
-  hostname: conv-rmq-clusterip
-  queue: converter
+# queue:
+#   exchange: test
+#   user: demo
+#   password: demo
+#   hostname: conv-rmq-clusterip
+#   queue: converter
 envs:
   - AMQP_EXCHANGE
   - AMQP_USER
