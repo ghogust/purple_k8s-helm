@@ -23,28 +23,32 @@ spec:
               # memory: "512Mi"
               # cpu: "100m"
           env:
-            - name: AMQP_EXCHANGE
-              valueFrom:
-                secretKeyRef:
-                  key: AMQP_EXCHANGE
-                  name: {{ .Values.rmq.name }}-secret
-            - name: AMQP_USER
-              valueFrom:
-                secretKeyRef:
-                  key: AMQP_USER
-                  name: {{ .Values.rmq.name }}-secret
-            - name: AMQP_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: AMQP_PASSWORD
-                  name: {{ .Values.rmq.name }}-secret
-            - name: AMQP_HOSTNAME
-              valueFrom:
-                secretKeyRef:
-                  key: AMQP_HOSTNAME
-                  name: {{ .Values.rmq.name }}-secret
-            - name: AMQP_QUEUE
-              valueFrom:
-                secretKeyRef:
-                  key: AMQP_QUEUE
-                  name: {{ .Values.rmq.name }}-secret
+            {{- range .Values.envs }}
+            {{- $data := dict "name" $.Values.rmq.name "env" . }}
+            {{- include "service.template" $data | indent 12 }}
+            {{- end }}
+            # - name: AMQP_EXCHANGE
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: AMQP_EXCHANGE
+            #       name: {{ .Values.rmq.name }}-secret
+            # - name: AMQP_USER
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: AMQP_USER
+            #       name: {{ .Values.rmq.name }}-secret
+            # - name: AMQP_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: AMQP_PASSWORD
+            #       name: {{ .Values.rmq.name }}-secret
+            # - name: AMQP_HOSTNAME
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: AMQP_HOSTNAME
+            #       name: {{ .Values.rmq.name }}-secret
+            # - name: AMQP_QUEUE
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: AMQP_QUEUE
+            #       name: {{ .Values.rmq.name }}-secret

@@ -19,26 +19,32 @@ spec:
           ports: 
             - containerPort: {{ .Values.api.port }}
           env:
-            - name: AMQP_EXCHANGE
-              valueFrom:
-                secretKeyRef:
-                  key: AMQP_EXCHANGE
-                  name: {{ .Values.rmq.name }}-secret
-            - name: AMQP_USER
-              valueFrom:
-                secretKeyRef:
-                  key: AMQP_USER
-                  name: {{ .Values.rmq.name }}-secret
-            - name: AMQP_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: AMQP_PASSWORD
-                  name: {{ .Values.rmq.name }}-secret
-            - name: AMQP_HOSTNAME
-              valueFrom:
-                secretKeyRef:
-                  key: AMQP_HOSTNAME
-                  name: {{ .Values.rmq.name }}-secret
+            {{- range .Values.envs }}
+            {{- $data := dict "name" $.Values.rmq.name "env" . }}
+            {{- if ne $data.env "AMQP_QUEUE" }}
+            {{- include "service.template" $data | indent 12 }}
+            {{- end }}
+            {{- end }}
+            # - name: AMQP_EXCHANGE
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: AMQP_EXCHANGE
+            #       name: {{ .Values.rmq.name }}-secret
+            # - name: AMQP_USER
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: AMQP_USER
+            #       name: {{ .Values.rmq.name }}-secret
+            # - name: AMQP_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: AMQP_PASSWORD
+            #       name: {{ .Values.rmq.name }}-secret
+            # - name: AMQP_HOSTNAME
+            #   valueFrom:
+            #     secretKeyRef:
+            #       key: AMQP_HOSTNAME
+            #       name: {{ .Values.rmq.name }}-secret
           resources:
             limits: {{ .Values.api.limits | toYaml | nindent 14 }}
               # memory: "512Mi"
